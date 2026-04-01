@@ -2,6 +2,9 @@ require('dotenv').config()
 
 const databaseUrl = process.env.DATABASE_URL
 
+console.log('DATABASE_URL existe?', !!databaseUrl)
+console.log('DATABASE_URL início:', databaseUrl ? databaseUrl.substring(0, 30) : 'UNDEFINED')
+
 module.exports = databaseUrl
   ? {
       dialect: 'postgres',
