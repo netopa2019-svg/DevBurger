@@ -1,0 +1,24 @@
+# Node
+node_modules/
+npm-debug.log*
+
+# Env
+.env
+.env.local
+.env.production
+
+# Uploads
+uploads/
+backend/uploads/
+
+# Build
+build/
+dist/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# VS Code
+.vscode/
+*.swp
