@@ -13,7 +13,6 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
-    "sequelize-cli": "^6.6.0",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
@@ -23,6 +22,7 @@
     "pg": "^8.10.0",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.31.0",
+    "sequelize-cli": "^6.6.0",
     "stripe": "^12.0.0",
     "uuid": "^9.0.0",
     "yup": "^1.1.1"
