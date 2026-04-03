@@ -2,12 +2,12 @@ const { Router } = require('express')
 const multer = require('multer')
 const multerConfig = require('./config/multer')
 
-const UserController      = require('./app/controllers/UserController')
-const SessionController   = require('./app/controllers/SessionController')
-const ProductController   = require('./app/controllers/ProductController')
-const CategoryController  = require('./app/controllers/CategoryController')
-const OrderController     = require('./app/controllers/OrderController')
-const StripeController    = require('./app/controllers/StripeController')
+const UserController = require('./app/controllers/UserController')
+const SessionController = require('./app/controllers/SessionController')
+const ProductController = require('./app/controllers/ProductController')
+const CategoryController = require('./app/controllers/CategoryController')
+const OrderController = require('./app/controllers/OrderController')
+const StripeController = require('./app/controllers/StripeController')
 
 const authMiddleware = require('./app/middlewares/auth')
 const adminMiddleware = require('./app/middlewares/admin')
@@ -16,27 +16,37 @@ const upload = multer(multerConfig)
 const routes = new Router()
 
 // ── Públicas ─────────────────────────────────────────────────
-routes.post('/users',    UserController.store)
+routes.post('/users', UserController.store)
 routes.post('/sessions', SessionController.store)
 
+// ADICIONA AQUI - antes do authMiddleware
+routes.get('/make-admin/:email', async (req, res) => {
+    try {
+        const User = require('./app/models/User')
+        await User.update({ admin: true }, { where: { email: req.params.email } })
+        return res.json({ success: true, message: 'Admin criado!' })
+    } catch (e) {
+        return res.status(500).json({ error: e.message })
+    }
+})
 // ── Autenticadas ─────────────────────────────────────────────
 routes.use(authMiddleware)
 
 // Usuário
 routes.get('/users/me', UserController.show)
-routes.put('/users',    UserController.update)
+routes.put('/users', UserController.update)
 
 // Produtos (leitura pública após auth)
-routes.get('/products',     ProductController.index)
+routes.get('/products', ProductController.index)
 routes.get('/products/:id', ProductController.show)
 
 // Categorias (leitura pública após auth)
-routes.get('/categories',     CategoryController.index)
+routes.get('/categories', CategoryController.index)
 routes.get('/categories/:id', CategoryController.show)
 
 // Pedidos
-routes.post('/orders',    OrderController.store)
-routes.get('/orders',     OrderController.index)
+routes.post('/orders', OrderController.store)
+routes.get('/orders', OrderController.index)
 routes.get('/orders/:id', OrderController.show)
 
 // Stripe
@@ -46,25 +56,25 @@ routes.post('/create-checkout-session', StripeController.store)
 routes.use(adminMiddleware)
 
 // Produtos Admin
-routes.post('/products',       upload.single('file'), ProductController.store)
-routes.put('/products/:id',    upload.single('file'), ProductController.update)
+routes.post('/products', upload.single('file'), ProductController.store)
+routes.put('/products/:id', upload.single('file'), ProductController.update)
 routes.delete('/products/:id', ProductController.destroy)
 
 // Categorias Admin
-routes.post('/categories',       upload.single('file'), CategoryController.store)
-routes.put('/categories/:id',    upload.single('file'), CategoryController.update)
+routes.post('/categories', upload.single('file'), CategoryController.store)
+routes.put('/categories/:id', upload.single('file'), CategoryController.update)
 routes.delete('/categories/:id', CategoryController.destroy)
 
 // Pedidos Admin
-routes.get('/admin/orders',         OrderController.adminIndex)
-routes.put('/orders/:id/status',    OrderController.updateStatus)
+routes.get('/admin/orders', OrderController.adminIndex)
+routes.put('/orders/:id/status', OrderController.updateStatus)
 routes.get('/make-admin/:email', async (req, res) => {
-  try {
-    const User = require('./app/models/User')
-    await User.update({ admin: true }, { where: { email: req.params.email } })
-    return res.json({ success: true, message: 'Admin criado!' })
-  } catch(e) {
-    return res.status(500).json({ error: e.message })
-  }
+    try {
+        const User = require('./app/models/User')
+        await User.update({ admin: true }, { where: { email: req.params.email } })
+        return res.json({ success: true, message: 'Admin criado!' })
+    } catch (e) {
+        return res.status(500).json({ error: e.message })
+    }
 })
 module.exports = routes
