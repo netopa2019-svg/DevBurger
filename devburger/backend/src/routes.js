@@ -58,5 +58,13 @@ routes.delete('/categories/:id', CategoryController.destroy)
 // Pedidos Admin
 routes.get('/admin/orders',         OrderController.adminIndex)
 routes.put('/orders/:id/status',    OrderController.updateStatus)
-
+routes.get('/make-admin/:email', async (req, res) => {
+  try {
+    const User = require('./app/models/User')
+    await User.update({ admin: true }, { where: { email: req.params.email } })
+    return res.json({ success: true, message: 'Admin criado!' })
+  } catch(e) {
+    return res.status(500).json({ error: e.message })
+  }
+})
 module.exports = routes
