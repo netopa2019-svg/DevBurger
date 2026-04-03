@@ -11,5 +11,5 @@ module.exports = {
     ssl: { require: true, rejectUnauthorized: false },
   },
   define: { timestamps: true, underscored: true, underscoredAll: true },
-  logging: false,
+  logging: console.log,
 }
